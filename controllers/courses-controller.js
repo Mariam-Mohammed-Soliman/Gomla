@@ -2,14 +2,13 @@ const Course = require("./../models/course-model");
 const { validationResult } = require("express-validator");
 const httpStatusText = require("./../utils/httpStatusText");
 const asyncHandler = require("express-async-handler");
-
+ 
 const appError=require('./../utils/appError');
 
 const getAllCourses = asyncHandler(async (req, res,next) => {
 
     const query = req.query;
     // console.log("query",query);
-
     const limit = query.limit || 10;
     const page = query.page || 1;
     const skip=(page-1)*limit;
@@ -129,3 +128,34 @@ const updateCourse = asyncHandler(async (req, res,next) => {
         updateCourse,
         deleteCourse,
     };
+
+
+    // controllers/
+// │
+// ├── categoryController.js
+// │   ├─ getAllCategories()
+// │   ├─ getCategoryById()
+// │   ├─ createCategory()
+// │   ├─ updateCategory()
+// │   └─ deleteCategory()
+// │
+// ├── subCategoryController.js
+// │   ├─ getAllSubcategories(categoryId)
+// │   ├─ getSubcategoryById(categoryId, subCategoryId)
+// │   ├─ createSubcategory(categoryId)
+// │   ├─ updateSubcategory(categoryId, subCategoryId)
+// │   └─ deleteSubcategory(categoryId, subCategoryId)
+// │
+// ├── subSubCategoryController.js
+// │   ├─ getAllSubSubcategories(categoryId, subCategoryId)
+// │   ├─ getSubSubcategoryById(categoryId, subCategoryId, subSubcategoryId)
+// │   ├─ createSubSubcategory(categoryId, subCategoryId)
+// │   ├─ updateSubSubcategory(categoryId, subCategoryId, subSubcategoryId)
+// │   └─ deleteSubSubcategory(categoryId, subCategoryId, subSubcategoryId)
+// │
+// └── productController.js
+//     ├─ getAllProducts(categoryId, subCategoryId, subSubcategoryId)
+//     ├─ getProductById(productId)
+//     ├─ createProduct(categoryId, subCategoryId, subSubcategoryId)
+//     ├─ updateProduct(productId)
+//     └─ deleteProduct(productId)

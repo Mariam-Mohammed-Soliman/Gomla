@@ -17,8 +17,10 @@ app.use(cors());
 
 const courseRouter=require('./routes/course-route');
 const userRouter=require('./routes/user-route');
+const categoryRouter=require('./routes/category-route');
 app.use('/api/courses',courseRouter);
 app.use('/api/users',userRouter);
+app.use('/api/categories',categoryRouter);
 
 app.all('*',(req,res,next)=>{
     return res.status(404).json({
@@ -33,7 +35,8 @@ app.use((err,req,res,next)=>{
         status:err.statusText || httpStatusText.ERROR,
         message:err.message,
         code:err.statusCode || 500,
-        data:null
+        data:null,
+        stack:err.stack
      });
 })
 

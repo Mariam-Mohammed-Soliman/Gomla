@@ -4,9 +4,10 @@ const router= express.Router();
 const{body,validationResult}=require('express-validator');
 
 const userController=require('../controllers/users-controller');
+const  verifyToken  = require('../middleware/verifyToken');
 
 router.route("/")
-    .get(userController.getAllUsers)
+    .get(verifyToken,userController.getAllUsers)
 router.route("/register")
     .post(userController.register)
 router.route("/login")
