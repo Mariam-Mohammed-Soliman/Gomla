@@ -1,8 +1,8 @@
 const Category = require("./../models/category-model");
 
 const SubCategory = require("./../models/subCategory-model");
-const SubSubCategory = require("./../models/subSubCategory-model");
-const Product = require("./../models/product-model");
+// const SubSubCategory = require("./../models/subSubCategory-model");
+// const Product = require("./../models/product-model");
 
 const { validationResult, body } = require("express-validator");
 const httpStatusText = require("./../utils/httpStatusText");
@@ -38,17 +38,15 @@ const getAllSubCategoriesByCategoryId = asyncHandler(async (req, res, next) => {
   });
 });
 
-// GET category by categoryId and subCategoryId
+// GET category by categoryId and subcategoryId
 const getSubCategoryById = asyncHandler(async (req, res, next) => {
 
-  const { categoryId, subCategoryId } = req.params;
-
-  // console.log("categoryId",categoryId,"subCategoryId",subCategoryId);
+  const { categoryId, subcategoryId } = req.params;
+  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId);
   
-
 const subCategory = await SubCategory.findOne({
   category: categoryId,
-  _id:subCategoryId
+  _id:subcategoryId
 });
   // console.log("subCategory",subCategory);
 if(!subCategory){
@@ -63,7 +61,6 @@ if(!subCategory){
             });
         }
         
-
 });
 
 // POST create category
@@ -73,7 +70,6 @@ const createSubCategory = asyncHandler(async (req, res, next) => {
   const {categoryId} = req.params;
 
   const categoryExists = await Category.findById(categoryId);
-
 
   if (!categoryExists) {
     const error = appError.create("Category not found", 404, httpStatusText.FAIL);
@@ -88,6 +84,7 @@ const createSubCategory = asyncHandler(async (req, res, next) => {
   } else {
     const newSubCategory = new SubCategory({
         ...req.body,
+        image: req.file ? req.file.path : "",
         category:categoryId
     });
 
@@ -105,9 +102,13 @@ const createSubCategory = asyncHandler(async (req, res, next) => {
 // PATCH update category
 const updateSubCategory = asyncHandler(async (req, res, next) => {
       // console.log("body", { ...req.body });
-    const { categoryId, subCategoryId } = req.params;
+    const { categoryId, subcategoryId } = req.params;
 
-  // console.log("categoryId",categoryId,"subCategoryId",subCategoryId);
+  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId);
+
+const categoryExists = await Category.findById(categoryId);
+if (!categoryExists) return next(appError.create("Category not found", 404, httpStatusText.FAIL));
+
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -117,7 +118,7 @@ const updateSubCategory = asyncHandler(async (req, res, next) => {
   
 const updatedSubCategory = await SubCategory.findOneAndUpdate(
       {category: categoryId,
-      _id:subCategoryId},
+      _id:subcategoryId},
         {$set:{...req.body}},
         {new:true}
 );
@@ -142,11 +143,15 @@ const updatedSubCategory = await SubCategory.findOneAndUpdate(
 // DELETE category
 const deleteSubCategory = asyncHandler(async (req, res, next) => {
   //  console.log("body", { ...req.body });
-    const { categoryId, subCategoryId } = req.params;
-  // console.log("categoryId",categoryId,"subCategoryId",subCategoryId);
+    const { categoryId, subcategoryId } = req.params;
+  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId);
+
+const categoryExists = await Category.findById(categoryId);
+if (!categoryExists) return next(appError.create("Category not found", 404, httpStatusText.FAIL));
+
     const deletedSubCategory = await SubCategory.deleteOne({ 
       category: categoryId,
-      _id:subCategoryId
+      _id:subcategoryId
      });
 
     // console.log("deletedSubCategory",deletedSubCategory);

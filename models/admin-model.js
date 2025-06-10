@@ -2,8 +2,8 @@ const mongoose=require('mongoose');
 
 const validator = require('validator');
 
-const User=new mongoose.Schema({
-    userName:{
+const Admin=new mongoose.Schema({
+    adminName:{
         type:String,
         required:true,
     },
@@ -20,22 +20,7 @@ const User=new mongoose.Schema({
     password:{
         type:String,
         required:true,
-    },
-  image: {
-    type: String,
-    required: true
-  },
-  location: {
-    latitude: {
-      type: Number,
-      required: false
-    },
-    longitude: {
-      type: Number,
-      required: false
     }
-  }
-    
 })
 
-module.exports=mongoose.model('User',User);
+module.exports=mongoose.model('Admin',Admin);
