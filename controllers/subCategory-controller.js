@@ -78,6 +78,13 @@ const createSubCategory = asyncHandler(async (req, res, next) => {
 
   const errors = validationResult(req);
 
+    //check if image exists
+  if (!req.file) {
+    const error = appError.create("Image is required", 400, httpStatusText.FAIL);
+    return next(error);
+  }
+
+
   if (!errors.isEmpty()) {
     const error = appError.create(errors.array(), 400, httpStatusText.FAIL);
     return next(error);

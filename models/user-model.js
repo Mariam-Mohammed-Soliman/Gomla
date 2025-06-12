@@ -34,6 +34,10 @@ const User=new mongoose.Schema({
       type: Number,
       required: false
     }
+  },
+  active:{
+    type:Boolean,
+    default:"false"
   }
     
 })

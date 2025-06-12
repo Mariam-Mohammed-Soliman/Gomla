@@ -13,21 +13,23 @@ const upload = require('../middleware/uploadImg');
 
 const categoryBodyValidation=[
     body('name').notEmpty().withMessage("name is required").isLength({min:2}).withMessage("name at least 2 digits"),
-    body('image').notEmpty().withMessage("image is required")
 ]
 const subCategoryBodyValidation=[
     body('name').notEmpty().withMessage("name is required").isLength({min:2}).withMessage("name at least 2 digits"),
-    body('image').notEmpty().withMessage("image is required")
 ]
-const subSubCategoryBodyValidation=[
+// const subSubCategoryBodyValidation=[
+//     body('name').notEmpty().withMessage("name is required").isLength({min:2}).withMessage("name at least 2 digits"),
+// ]
+const productBodyValidation=[
     body('name').notEmpty().withMessage("name is required").isLength({min:2}).withMessage("name at least 2 digits"),
-    body('image').notEmpty().withMessage("image is required")
+    body('price').notEmpty().withMessage("price is required"),
+    body('quantity').notEmpty().withMessage("quantity is required"),
 ]
 
     //categories
 router.route("/")
     .get(categoryController.getAllCategories)
-    .post(categoryBodyValidation,upload.single("image"),categoryController.createCategory);
+    .post(upload.single("image"),categoryBodyValidation,categoryController.createCategory);
 
 // router.route("/subcategories")
 //         .get(subCategoryController.getAllSubCategories);
@@ -44,7 +46,7 @@ router.route("/:categoryId")
     //subCategories
 router.route("/:categoryId/subcategories")
     .get(subCategoryController.getAllSubCategoriesByCategoryId)
-    .post(subCategoryBodyValidation,upload.single("image"),subCategoryController.createSubCategory);
+    .post(upload.single("image"),subCategoryBodyValidation,subCategoryController.createSubCategory);
 
 router.route("/:categoryId/subcategories/:subcategoryId")
     .get(subCategoryController.getSubCategoryById)
@@ -53,22 +55,22 @@ router.route("/:categoryId/subcategories/:subcategoryId")
 
 
     //subSubCategories
-router.route("/:categoryId/subcategories/:subcategoryId/subsubcategories")
-    .get(subSubCategoryController.getAllSubSubCategoriesBySubCategoryId)
-    .post(subSubCategoryBodyValidation,upload.single("image"),subSubCategoryController.createSubSubCategory);
+// router.route("/:categoryId/subcategories/:subcategoryId/subsubcategories")
+//     .get(subSubCategoryController.getAllSubSubCategoriesBySubCategoryId)
+//     .post(upload.single("image"),subSubCategoryBodyValidation,subSubCategoryController.createSubSubCategory);
 
-router.route("/:categoryId/subcategories/:subcategoryId/subsubcategories/:subsubcategoryId")
-    .get(subSubCategoryController.getSubSubCategoryById)
-    .patch(subSubCategoryController.updateSubSubCategory)
-    .delete(subSubCategoryController.deleteSubSubCategory);
+// router.route("/:categoryId/subcategories/:subcategoryId/subsubcategories/:subsubcategoryId")
+//     .get(subSubCategoryController.getSubSubCategoryById)
+//     .patch(subSubCategoryController.updateSubSubCategory)
+//     .delete(subSubCategoryController.deleteSubSubCategory);
 
 
-    //product
-router.route("/:categoryId/subcategories/:subcategoryId/subsubcategories/:subsubcategoryId/products")
+    //product    /subsubcategories/:subsubcategoryId
+router.route("/:categoryId/subcategories/:subcategoryId/products")
     .get(productController.getAllProductsBySubCategoryId)
-    .post(upload.single("image"),productController.createProduct);
+    .post(upload.single("image"),productBodyValidation,productController.createProduct);
 
-router.route("/:categoryId/subcategories/:subcategoryId/subsubcategories/:subsubcategoryId/products/:productId")
+router.route("/:categoryId/subcategories/:subcategoryId/products/:productId")
     .get(productController.getProductById)
     .patch(productController.updateProduct)
     .delete(productController.deleteProduct);

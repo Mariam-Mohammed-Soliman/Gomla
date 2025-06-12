@@ -25,6 +25,7 @@ const getCategoryById = asyncHandler(async (req, res, next) => {
 const category = await Category.findById(categoryId);
 //   console.log(category);
 
+
 if(!category){
             const error= appError.create("category not found",404, httpStatusText.FAIL);
             return next(error);
@@ -43,8 +44,15 @@ if(!category){
 
 // POST create category
 const createCategory = asyncHandler(async (req, res, next) => {
-//   console.log("body", { ...req.body });
+  console.log("body", { ...req.body });
   const errors = validationResult(req);
+
+
+    //check if image exists
+  if (!req.file) {
+    const error = appError.create("Image is required", 400, httpStatusText.FAIL);
+    return next(error);
+  }
 
   if (!errors.isEmpty()) {
     const error = appError.create(errors.array(), 400, httpStatusText.FAIL);

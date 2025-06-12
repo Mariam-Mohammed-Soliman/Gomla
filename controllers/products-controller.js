@@ -1,6 +1,5 @@
 const Category = require("../models/category-model");
 const SubCategory = require("../models/subCategory-model");
-const SubSubCategory = require("../models/subSubCategory-model");
 const Product=require("../models/product-model");
 
 const { validationResult, body } = require("express-validator");
@@ -12,12 +11,11 @@ const appError = require("../utils/appError");
 // GET all products by subSubCategoryId
 const getAllProductsBySubCategoryId = asyncHandler(async (req, res, next) => {
 
-    const {categoryId,subcategoryId,subsubcategoryId} = req.params;
+    const {categoryId,subcategoryId} = req.params;
   const products = await Product.find({
     category: categoryId,
     subCategory:subcategoryId,
-    subSubCategory:subsubcategoryId
-  }, { __v: false }).populate('category').populate('subCategory').populate('subSubCategory');
+  }, { __v: false }).populate('category').populate('subCategory');
 
   // console.log("products",products);
 
@@ -32,15 +30,14 @@ const getAllProductsBySubCategoryId = asyncHandler(async (req, res, next) => {
 // GET product by categoryId and subCategoryId and sub-subcategory
 const getProductById = asyncHandler(async (req, res, next) => {
 
-  const { categoryId, subcategoryId, subsubcategoryId,productId } = req.params;
+  const { categoryId, subcategoryId,productId } = req.params;
 
-  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId,"subsubcategoryId",subsubcategoryId,"productId",productId);
+  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId,"productId",productId);
   
 
 const product = await Product.findOne({
   category: categoryId,
   subCategory:subcategoryId,
-  subSubCategory:subsubcategoryId,
   _id:productId
 });
   // console.log("product",product);
@@ -63,13 +60,12 @@ if(!product){
 const createProduct = asyncHandler(async (req, res, next) => {
   // console.log("body", { ...req.body });
 
-  const {categoryId,subcategoryId,subsubcategoryId} = req.params;
+  const {categoryId,subcategoryId} = req.params;
 
-  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId,"subsubcategoryId",subsubcategoryId);
+  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId);
 
   const categoryExists = await Category.findById(categoryId);
   const subCategoryExists = await SubCategory.findById(subcategoryId);
-  const subSubCategoryExists = await SubSubCategory.findById(subsubcategoryId);
 
 
   if (!categoryExists) {
@@ -78,13 +74,16 @@ const createProduct = asyncHandler(async (req, res, next) => {
 if (!subCategoryExists) {
   return next(appError.create("SubCategory not found", 404, httpStatusText.FAIL));
 }
-if (!subSubCategoryExists) {
-  return next(appError.create("SubSubCategory not found", 404, httpStatusText.FAIL));
-}
-
 
   const errors = validationResult(req);
 
+  
+      //check if image exists
+    if (!req.file) {
+      const error = appError.create("Image is required", 400, httpStatusText.FAIL);
+      return next(error);
+    }
+    
   if (!errors.isEmpty()) {
     const error = appError.create(errors.array(), 400, httpStatusText.FAIL);
     return next(error);
@@ -94,7 +93,6 @@ if (!subSubCategoryExists) {
         image: req.file ? req.file.path : "",
         category:categoryId,
         subCategory:subcategoryId,
-        subSubCategory:subsubcategoryId
     });
 
     // console.log("newProduct",newProduct);
@@ -111,13 +109,12 @@ if (!subSubCategoryExists) {
 // PATCH update category
 const updateProduct = asyncHandler(async (req, res, next) => {
       // console.log("body", { ...req.body });
-    const {categoryId,subcategoryId,subsubcategoryId,productId} = req.params;
+    const {categoryId,subcategoryId,productId} = req.params;
 
-  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId,"subsubcategoryId",subsubcategoryId,"productId",productId);
+  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId,"productId",productId);
 
   const categoryExists = await Category.findById(categoryId);
   const subCategoryExists = await SubCategory.findById(subcategoryId);
-  const subSubCategoryExists = await SubSubCategory.findById(subsubcategoryId);
 
 
   if (!categoryExists) {
@@ -125,9 +122,6 @@ const updateProduct = asyncHandler(async (req, res, next) => {
 }
 if (!subCategoryExists) {
   return next(appError.create("SubCategory not found", 404, httpStatusText.FAIL));
-}
-if (!subSubCategoryExists) {
-  return next(appError.create("SubSubCategory not found", 404, httpStatusText.FAIL));
 }
 
 
@@ -142,7 +136,6 @@ const updatedProduct = await Product.findOneAndUpdate(
       {
         category: categoryId,
         subCategory:subcategoryId,
-        subSubCategory:subsubcategoryId,
         _id:productId
     },
         {$set:{...req.body}},
@@ -169,13 +162,12 @@ const updatedProduct = await Product.findOneAndUpdate(
 // DELETE category
 const deleteProduct = asyncHandler(async (req, res, next) => {
   //  console.log("body", { ...req.body });
-    const {categoryId,subcategoryId,subsubcategoryId,productId} = req.params;
+    const {categoryId,subcategoryId,productId} = req.params;
 
-  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId,"subsubcategoryId",subsubcategoryId,"productId",productId);
+  // console.log("categoryId",categoryId,"subcategoryId",subcategoryId,"productId",productId);
 
   const categoryExists = await Category.findById(categoryId);
   const subCategoryExists = await SubCategory.findById(subcategoryId);
-  const subSubCategoryExists = await SubSubCategory.findById(subsubcategoryId);
 
 
   if (!categoryExists) {
@@ -184,15 +176,11 @@ const deleteProduct = asyncHandler(async (req, res, next) => {
 if (!subCategoryExists) {
   return next(appError.create("SubCategory not found", 404, httpStatusText.FAIL));
 }
-if (!subSubCategoryExists) {
-  return next(appError.create("SubSubCategory not found", 404, httpStatusText.FAIL));
-}
 
 
     const deletedProduct = await Product.deleteOne({ 
       category: categoryId,
       subCategory:subcategoryId,
-      subSubCategory:subsubcategoryId,
       _id:productId
      });
 
