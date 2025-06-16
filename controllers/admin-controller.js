@@ -1,8 +1,27 @@
 const Admin = require("../models/admin-model");
+const User = require("./../models/user-model");
+const { validationResult } = require("express-validator");
 const httpStatusText = require("../utils/httpStatusText");
 const asyncHandler = require("express-async-handler");
 const appError=require('../utils/appError');
 const bcrypt = require('bcrypt');
+
+const {generateJWT}  = require("../utils/generateJWT");
+
+
+const getAllUsers=asyncHandler(async (req, res,next) => {
+   
+    // console.log("req.user====>",req.user);
+
+    const users = await User.find({},{"__v":false,"password":false});
+    res.json({
+        status: httpStatusText.SUCCESS,
+        data: {
+        users: users,
+        },
+    });
+}) ;
+
 
 const register=asyncHandler(async (req, res,next) => {
     const {adminName,email,phone,password}=req.body;
@@ -33,7 +52,12 @@ const register=asyncHandler(async (req, res,next) => {
 
 
 const login=asyncHandler(async (req, res,next) => {
+
+    
     const {email,password}=req.body;
+
+    // console.log(email);
+    
 
     if(!email || !password) {
         const error= appError.create("email && password are required",400, httpStatusText.FAIL)
@@ -48,8 +72,13 @@ const login=asyncHandler(async (req, res,next) => {
     }
     const matchedPassword= await bcrypt.compare(password,admin.password)
     if(admin && matchedPassword) {
+        //generate JWT token
+        const token= await generateJWT({email:admin.email,id:admin._id,role:admin.role});
         return res.json({
             status: httpStatusText.SUCCESS,
+            data: {
+            token
+            },
         });
     }
     else{
@@ -59,6 +88,7 @@ const login=asyncHandler(async (req, res,next) => {
 }) ;
 
 module.exports ={
+    getAllUsers,
     register,
     login
 }

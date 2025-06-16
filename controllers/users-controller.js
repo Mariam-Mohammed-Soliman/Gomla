@@ -1,13 +1,19 @@
 const User = require("./../models/user-model");
+const { validationResult } = require("express-validator");
 const httpStatusText = require("./../utils/httpStatusText");
 const asyncHandler = require("express-async-handler");
 const appError=require('./../utils/appError');
 const bcrypt = require('bcrypt');
+const jwt=require('jsonwebtoken');
+const {generateJWT}  = require("../utils/generateJWT");
+
 
 
 const register=asyncHandler(async (req, res,next) => {
     // console.log(req.body);
-    const {userName,email,phone,password, latitude, longitude}=req.body;
+    const {firstName,lastName,email,password}=req.body;
+
+    const errors = validationResult(req);
 
     const oldUser=await User.findOne({email: email});
 
@@ -18,30 +24,24 @@ const register=asyncHandler(async (req, res,next) => {
         const hashedPassword=await bcrypt.hash(password,10);
 
         const newUser = new User({
-            userName,
+            firstName,
+            lastName,
             email,
-            phone,
             password:hashedPassword,
-            image: req.file ? req.file.path : "",
-            location: {
-                latitude,
-                longitude
-            }
         });
 
         await newUser.save();
         res.json({
         status: httpStatusText.SUCCESS,
-        data: {
-            user: newUser
-        },
+        data: { user: newUser },
         });
     }
 }) ;
 
 
 const login=asyncHandler(async (req, res,next) => {
-        // console.log("login",req.body);
+        console.log("login",req.body);
+
 
     const {email,password}=req.body;
 
@@ -58,10 +58,13 @@ const login=asyncHandler(async (req, res,next) => {
     }
     const matchedPassword= await bcrypt.compare(password,user.password)
     if(user && matchedPassword) {
-        
+        //generate JWT token
+        const token= await generateJWT({email:user.email,id:user._id,role:user.role});
         return res.json({
             status: httpStatusText.SUCCESS,
-            
+            data: {
+            token
+            },
         });
     }
     else{
@@ -71,6 +74,7 @@ const login=asyncHandler(async (req, res,next) => {
 }) ;
 
 module.exports ={
+    // getAllUsers,
     register,
     login
 }
