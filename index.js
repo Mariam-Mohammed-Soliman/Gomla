@@ -5,8 +5,9 @@ const httpStatusText = require("./utils/httpStatusText");
 
 const cors=require('cors');
 
-
+console.log("MONGO_URL is: ", process.env.MONGO_URL);
 mongoose.connect(process.env.MONGO_URL).then(()=>{
+    console.log("MONGO_URL is: ", process.env.MONGO_URL);
     console.log("Connect to DB successfully");
 })
 const app = express();
