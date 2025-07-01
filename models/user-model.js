@@ -38,8 +38,12 @@ const User=new mongoose.Schema({
   active:{
     type:Boolean,
     default:"false"
-  }
-    
+  },
+    role: {
+  type: String,
+  default: "user",
+}
+
 })
 
 module.exports=mongoose.model('User',User);

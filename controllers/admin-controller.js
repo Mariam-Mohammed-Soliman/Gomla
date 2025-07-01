@@ -65,6 +65,8 @@ const login=asyncHandler(async (req, res,next) => {
     }
     
     const admin=await Admin.findOne({email: email});
+    console.log("admin object = ", admin);
+
 
     if(!admin) {
         const error= appError.create("user not found",400, httpStatusText.FAIL)
@@ -74,6 +76,9 @@ const login=asyncHandler(async (req, res,next) => {
     if(admin && matchedPassword) {
         //generate JWT token
         const token= await generateJWT({email:admin.email,id:admin._id,role:admin.role});
+        console.log("admin before token", admin); // لازم يكون فيه role
+console.log("token payload", { email: admin.email, id: admin._id, role: admin.role });
+
         return res.json({
             status: httpStatusText.SUCCESS,
             data: {

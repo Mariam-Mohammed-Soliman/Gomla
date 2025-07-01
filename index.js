@@ -8,7 +8,6 @@ const cors=require('cors');
 
 mongoose.connect(process.env.MONGO_URL).then(()=>{
     console.log("Connect to DB successfully");
-    
 })
 const app = express();
 app.use(express.json());
@@ -25,10 +24,12 @@ app.use('/api/courses',courseRouter);
 const adminRouter=require('./routes/admin-route')
 const userRouter=require('./routes/user-route');
 const categoryRouter=require('./routes/category-route');
+const orderRouter=require('./routes/order-route');
 
 app.use('/api/admin',adminRouter);
 app.use('/api/users',userRouter);
 app.use('/api/categories',categoryRouter);
+app.use('/api/order',orderRouter);
 
 app.all('*',(req,res,next)=>{
     return res.status(404).json({

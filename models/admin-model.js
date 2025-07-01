@@ -20,7 +20,12 @@ const Admin=new mongoose.Schema({
     password:{
         type:String,
         required:true,
-    }
+    },
+    role: {
+  type: String,
+  default: "admin",
+}
+
 })
 
 module.exports=mongoose.model('Admin',Admin);
