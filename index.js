@@ -5,9 +5,9 @@ const httpStatusText = require("./utils/httpStatusText");
 
 const cors=require('cors');
 
-console.log("MONGO_URL is: ", process.env.MONGO_URL);
+// console.log("MONGO_URL is: ", process.env.MONGO_URL);
 mongoose.connect(process.env.MONGO_URL).then(()=>{
-    console.log("MONGO_URL is: ", process.env.MONGO_URL);
+    // console.log("MONGO_URL is: ", process.env.MONGO_URL);
     console.log("Connect to DB successfully");
 })
 const app = express();
@@ -26,11 +26,15 @@ const adminRouter=require('./routes/admin-route')
 const userRouter=require('./routes/user-route');
 const categoryRouter=require('./routes/category-route');
 const orderRouter=require('./routes/order-route');
+const messagesRouter=require('./routes/messages-route');
+const couponRouter=require('./routes/coupon-route');
 
 app.use('/api/admin',adminRouter);
 app.use('/api/users',userRouter);
 app.use('/api/categories',categoryRouter);
 app.use('/api/order',orderRouter);
+app.use('/api/message',messagesRouter);
+app.use('/api/coupon',couponRouter);
 
 app.all('*',(req,res,next)=>{
     return res.status(404).json({
