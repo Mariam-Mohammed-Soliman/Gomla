@@ -132,13 +132,23 @@ if (!subCategoryExists) {
   return next(error);
   }
   
+   //check if image exists
+     console.log("image",req.file);
+     
+  if (!req.file) {
+    const error = appError.create("Image is required", 400, httpStatusText.FAIL);
+    return next(error);
+  }
 const updatedProduct = await Product.findOneAndUpdate(
       {
         category: categoryId,
         subCategory:subcategoryId,
         _id:productId
     },
-        {$set:{...req.body}},
+        {$set:{
+          ...req.body,
+          image: req.file ? req.file.path : "",
+        }},
         {new:true}
 );
   // console.log("updatedProduct",updatedProduct);

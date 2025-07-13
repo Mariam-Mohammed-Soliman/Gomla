@@ -8,14 +8,27 @@ const jwt=require('jsonwebtoken');
 const {generateJWT}  = require("../utils/generateJWT");
 
 
-
 const register=asyncHandler(async (req, res,next) => {
-    // console.log(req.body);
-    const {firstName,lastName,email,password}=req.body;
+    console.log(req.body);
+    const {userName, email, phone, password, balance, latitude,longitude}=req.body;
 
     const errors = validationResult(req);
 
     const oldUser=await User.findOne({email: email});
+
+     //check if image exists
+     console.log("image",req.file);
+     
+      if (!req.file) {
+        const error = appError.create("Image is required", 400, httpStatusText.FAIL);
+        return next(error);
+      }
+
+      const location = {};
+if (latitude && longitude) {
+  location.latitude = parseFloat(latitude);
+  location.longitude = parseFloat(longitude);
+}
 
     if (oldUser) {
         const error= appError.create("email is exist",400, httpStatusText.FAIL)
@@ -24,11 +37,17 @@ const register=asyncHandler(async (req, res,next) => {
         const hashedPassword=await bcrypt.hash(password,10);
 
         const newUser = new User({
-            firstName,
-            lastName,
+            userName,
             email,
-            password:hashedPassword,
+            phone,
+            password: hashedPassword,
+            balance: balance || 0,
+            location: location,
+            image: req.file ? req.file.path : "",
+            role: 'user',
+            active: false 
         });
+        // return;
 
         await newUser.save();
         res.json({

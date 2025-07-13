@@ -13,6 +13,10 @@ const User=new mongoose.Schema({
         unique:true,
         validate:[validator.isEmail,'must be a valid email']
     },
+  balance: {
+    type: Number,
+    default: 0
+  },
     phone:{
         type:String,
         required:true,

@@ -23,6 +23,81 @@ const getAllUsers=asyncHandler(async (req, res,next) => {
 }) ;
 
 
+const updateUserActivation=asyncHandler(async (req, res,next) => {
+      console.log("body", { ...req.body });
+
+      const {active}=req.body;
+
+            const userId = req.params.userId;
+          console.log("userId",userId);
+    
+        let updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {$set:{active}},
+            {new:true}
+        );
+          console.log("updatedUser",updatedUser);
+    
+        if(!updatedUser){
+                    const error= appError.create("category not found",404, httpStatusText.FAIL);
+                    return next(error);
+                }
+                else{
+                res.json({
+                        status: httpStatusText.SUCCESS,
+                        data: {
+                            user: updatedUser,
+                        },
+                    });
+        }
+}) ;
+
+const updateUserBalance=asyncHandler(async (req, res,next) => {
+      console.log("body", { ...req.body });
+
+      const {balance}=req.body;
+
+            const userId = req.params.userId;
+          console.log("userId",userId);
+    
+        let updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {$set:{balance}},
+            {new:true}
+        );
+          console.log("updatedUser",updatedUser);
+    
+        if(!updatedUser){
+                    const error= appError.create("category not found",404, httpStatusText.FAIL);
+                    return next(error);
+                }
+                else{
+                res.json({
+                        status: httpStatusText.SUCCESS,
+                        data: {
+                            user: updatedUser,
+                        },
+                    });
+        }
+}) ;
+
+const deleteUser = asyncHandler(async (req, res, next) => {
+    const userId = req.params.userId;
+    const deletedUser = await User.deleteOne({ _id: userId });
+
+    console.log("deletedUser",deletedUser);
+    if (deletedUser.deletedCount===0) {
+        const error = appError.create("category not found", 404, httpStatusText.FAIL);
+        return next(error);
+    }else{
+        res.json({
+            status: httpStatusText.SUCCESS,
+            message: "user deleted successfully",
+
+        });
+    }
+});
+
 const register=asyncHandler(async (req, res,next) => {
     const {adminName,email,phone,password}=req.body;
 
@@ -94,6 +169,9 @@ console.log("token payload", { email: admin.email, id: admin._id, role: admin.ro
 
 module.exports ={
     getAllUsers,
+    updateUserActivation,
+    updateUserBalance,
+    deleteUser,
     register,
     login
 }

@@ -73,17 +73,28 @@ const createCategory = asyncHandler(async (req, res, next) => {
 
 // PATCH update category
 const updateCategory = asyncHandler(async (req, res, next) => {
-    //   console.log("body", { ...req.body });
+      console.log("body", { ...req.body });
 
         const categoryId = req.params.categoryId;
-    //   console.log("categoryId",categoryId);
+      console.log("categoryId",categoryId);
+
+     //check if image exists
+     console.log("image",req.file);
+     
+  if (!req.file) {
+    const error = appError.create("Image is required", 400, httpStatusText.FAIL);
+    return next(error);
+  }
 
     let updatedCategory = await Category.findByIdAndUpdate(
     categoryId,
-        {$set:{...req.body}},
+        {$set:{
+          ...req.body,
+          image: req.file ? req.file.path : "",
+        }},
         {new:true}
     );
-    //   console.log("updatedCategory",updatedCategory);
+      console.log("updatedCategory",updatedCategory);
 
     if(!updatedCategory){
                 const error= appError.create("category not found",404, httpStatusText.FAIL);

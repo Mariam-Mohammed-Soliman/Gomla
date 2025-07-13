@@ -123,10 +123,21 @@ if (!categoryExists) return next(appError.create("Category not found", 404, http
   return next(error);
   }
   
+   //check if image exists
+       console.log("image",req.file);
+       
+    if (!req.file) {
+      const error = appError.create("Image is required", 400, httpStatusText.FAIL);
+      return next(error);
+    }
 const updatedSubCategory = await SubCategory.findOneAndUpdate(
       {category: categoryId,
       _id:subcategoryId},
-        {$set:{...req.body}},
+        {$set:{
+          ...req.body,
+          image: req.file ? req.file.path : "",
+
+        }},
         {new:true}
 );
   // console.log("updatedSubCategory",updatedSubCategory);

@@ -39,7 +39,7 @@ router.route("/")
 
 router.route("/:categoryId")
     .get(categoryController.getCategoryById)
-    .patch(categoryController.updateCategory)
+    .patch(upload.single("image"),categoryController.updateCategory)
     .delete(categoryController.deleteCategory);
 
 
@@ -50,7 +50,7 @@ router.route("/:categoryId/subcategories")
 
 router.route("/:categoryId/subcategories/:subcategoryId")
     .get(subCategoryController.getSubCategoryById)
-    .patch(subCategoryController.updateSubCategory)
+    .patch(upload.single("image"),subCategoryController.updateSubCategory)
     .delete(subCategoryController.deleteSubCategory);
 
 
@@ -72,7 +72,7 @@ router.route("/:categoryId/subcategories/:subcategoryId/products")
 
 router.route("/:categoryId/subcategories/:subcategoryId/products/:productId")
     .get(productController.getProductById)
-    .patch(productController.updateProduct)
+    .patch(upload.single("image"),productController.updateProduct)
     .delete(productController.deleteProduct);
 
 
