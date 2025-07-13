@@ -71,8 +71,26 @@ const createCoupon = asyncHandler(async (req, res, next) => {
   }
 });
 
+const deleteCoupon = asyncHandler(async (req, res, next) => {
+    const couponId = req.params.couponId;
+    const deletedCoupon = await Coupon.deleteOne({ _id: couponId });
+
+    // console.log("deletedCoupon",deletedCoupon);
+    if (deletedCoupon.deletedCount===0) {
+        const error = appError.create("coupon not found", 404, httpStatusText.FAIL);
+        return next(error);
+    }else{
+        res.json({
+            status: httpStatusText.SUCCESS,
+            message: "Coupon deleted successfully",
+
+        });
+    }
+});
+
 
 module.exports = {
     getAllCoupons,
     createCoupon,
+    deleteCoupon
 };

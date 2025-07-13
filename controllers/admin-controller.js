@@ -39,7 +39,7 @@ const updateUserActivation=asyncHandler(async (req, res,next) => {
           console.log("updatedUser",updatedUser);
     
         if(!updatedUser){
-                    const error= appError.create("category not found",404, httpStatusText.FAIL);
+                    const error= appError.create("user not found",404, httpStatusText.FAIL);
                     return next(error);
                 }
                 else{
@@ -68,7 +68,7 @@ const updateUserBalance=asyncHandler(async (req, res,next) => {
           console.log("updatedUser",updatedUser);
     
         if(!updatedUser){
-                    const error= appError.create("category not found",404, httpStatusText.FAIL);
+                    const error= appError.create("user not found",404, httpStatusText.FAIL);
                     return next(error);
                 }
                 else{

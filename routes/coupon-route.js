@@ -33,8 +33,10 @@ const couponValidation = [
 
     //Coupons
 router.route("/")
-    .get(verifyToken,authorizeRoles("admin"),couponController.getAllCoupons)
-    .post(verifyToken,authorizeRoles("admin"),couponValidation,couponController.createCoupon)
+.get(verifyToken,authorizeRoles("admin"),couponController.getAllCoupons)
+.post(verifyToken,authorizeRoles("admin"),couponValidation,couponController.createCoupon)
+router.route("/:couponId")
+    .delete(verifyToken,authorizeRoles("admin"),couponValidation,couponController.deleteCoupon)
 
 
 module.exports = router;
