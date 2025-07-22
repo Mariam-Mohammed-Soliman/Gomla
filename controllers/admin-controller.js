@@ -25,6 +25,8 @@ const getAllUsers=asyncHandler(async (req, res,next) => {
 
 const updateUserActivation=asyncHandler(async (req, res,next) => {
       console.log("body", { ...req.body });
+          console.log("req.user====>",req.user);
+
 
       const {active}=req.body;
 

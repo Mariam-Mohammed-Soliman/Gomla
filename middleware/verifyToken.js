@@ -14,13 +14,13 @@ const verifyToken=(req,res,next)=>{
     }
     const token =authHeader.split(' ')[1];
 
-    // console.log("token=",token);
+    console.log("token=",token);
     
     try{
 
         const decoded= jwt.verify(token,process.env.JWT_SECRET_KEY);
 
-        // console.log("decoded",decoded);
+        console.log("decoded",decoded);
         
         req.user=decoded;
         next();

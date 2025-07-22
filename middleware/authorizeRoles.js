@@ -3,7 +3,7 @@ const httpStatusText = require("../utils/httpStatusText");
 
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    // console.log("authorizeRoles=>",req.user.role);
+    console.log("authorizeRoles=>",req.user.role);
     
     if (!roles.includes(req.user.role)) {
       const error = appError.create("Access Denied", 403, httpStatusText.FAIL);

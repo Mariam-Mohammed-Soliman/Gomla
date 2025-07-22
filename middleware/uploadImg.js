@@ -7,7 +7,11 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/'); // مجلد لحفظ الصور
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    
+    let dateNow=Date.now();
+    // console.log(dateNow);
+    
+    const uniqueSuffix = dateNow + '-' + Math.round(Math.random() * 1E9);
     cb(null, uniqueSuffix + path.extname(file.originalname)); // اسم فريد لكل صورة
   }
 });
